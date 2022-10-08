@@ -1,4 +1,4 @@
-package com.liquido.kafka.config;
+package com.liquido.kafka.errorHandler;
 
 import com.liquido.kafka.service.RobotAlarm;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -22,23 +22,35 @@ public class CustomErrorHandler extends DefaultErrorHandler {
 
     @Override
     public void handleRecord(Exception thrownException, ConsumerRecord<?, ?> record, Consumer<?, ?> consumer, MessageListenerContainer container) {
-        robotAlarm.alarm();
         super.handleRecord(thrownException, record, consumer, container);
+        robotAlarm.alarm();
+
     }
 
     @Override
     public void handleRemaining(Exception thrownException, List<ConsumerRecord<?, ?>> records, Consumer<?, ?> consumer, MessageListenerContainer container) {
-        robotAlarm.alarm();
         super.handleRemaining(thrownException, records, consumer, container);
+        robotAlarm.alarm();
     }
 
     @Override
     public void handleBatch(Exception thrownException, ConsumerRecords<?, ?> data, Consumer<?, ?> consumer, MessageListenerContainer container, Runnable invokeListener) {
-        robotAlarm.alarm();
         super.handleBatch(thrownException, data, consumer, container, invokeListener);
+        robotAlarm.alarm();
+
+    }
+
+    @Override
+    public void handleOtherException(Exception thrownException, Consumer<?, ?> consumer, MessageListenerContainer container, boolean batchListener) {
+        super.handleOtherException(thrownException, consumer, container, batchListener);
+        robotAlarm.alarm();
+
     }
 }
 
 // 重试，需要进行告警 已完成
-// 重试失败，发送到死信前，需要进行告警（发送前看看能不能自定义一些东西）。发送失败后，需要告警和进行补偿机制
+// 重试失败，发送到死信前，需要进行告警 发送失败后，需要告警和进行补偿机制 已完成√
+//（发送前看看能不能自定义一些东西）
 // 进入死信后
+
+

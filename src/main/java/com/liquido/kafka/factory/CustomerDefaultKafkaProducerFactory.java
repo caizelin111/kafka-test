@@ -1,26 +1,22 @@
-package com.liquido.kafka.config;
+package com.liquido.kafka.factory;
 
+import com.liquido.kafka.interceptor.CustomerProducerInterceptors;
 import lombok.SneakyThrows;
 import org.apache.kafka.clients.KafkaClient;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.internals.ProducerInterceptors;
 import org.apache.kafka.clients.producer.internals.ProducerMetadata;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.utils.Time;
-import org.springframework.boot.autoconfigure.kafka.DefaultKafkaProducerFactoryCustomizer;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.ProducerPostProcessor;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
@@ -28,8 +24,9 @@ import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_
 public class CustomerDefaultKafkaProducerFactory extends DefaultKafkaProducerFactory<Object, Object> {
 
     // 设为final的好处是什么？
-    private final List<ProducerInterceptor<Object, Object>> interceptors;
-    public CustomerDefaultKafkaProducerFactory(Map configs,List<ProducerInterceptor<Object, Object>> interceptors) {
+    private final CustomerProducerInterceptors interceptors;
+
+    public CustomerDefaultKafkaProducerFactory(Map configs, CustomerProducerInterceptors interceptors) {
         super(configs);
         this.interceptors = interceptors;
     }
@@ -42,7 +39,7 @@ public class CustomerDefaultKafkaProducerFactory extends DefaultKafkaProducerFac
         declaredConstructor.setAccessible(true);
         Serializer<Object> keySerializer = super.getKeySerializerSupplier().get();
         Serializer<Object> valueSerializer = super.getValueSerializerSupplier().get();
-        KafkaProducer kafkaProducer = declaredConstructor.newInstance(appendSerializerToConfig(rawConfigs, keySerializer, valueSerializer), keySerializer, valueSerializer, null, null, null, Time.SYSTEM);
+        KafkaProducer kafkaProducer = declaredConstructor.newInstance(appendSerializerToConfig(rawConfigs, keySerializer, valueSerializer), keySerializer, valueSerializer, null, null, interceptors, Time.SYSTEM);
         for (ProducerPostProcessor<Object, Object> pp : super.getPostProcessors()) {
             kafkaProducer = (KafkaProducer) pp.apply(kafkaProducer);
         }

@@ -1,5 +1,9 @@
 package com.liquido.kafka.config;
 
+import com.liquido.kafka.errorHandler.CustomErrorHandler;
+import com.liquido.kafka.factory.CustomerDefaultKafkaProducerFactory;
+import com.liquido.kafka.interceptor.CustomerProducerInterceptors;
+import com.liquido.kafka.support.KafkaCompensationHandler;
 import com.liquido.kafka.service.RobotAlarm;
 import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.common.TopicPartition;
@@ -35,17 +39,9 @@ public class KafkaConfig {
 
     @Autowired
     private List<ProducerInterceptor<Object, Object>> interceptors;
-//    @Autowired(required = false)
-//    @SuppressWarnings("rawtypes")
-//    private List<ProducerInterceptor> producerInterceptors;
-//
-//    @Autowired
-//    private AlarmReporter alarmReporter;
 
-//    @Autowired
-//    private List<KafkaCompensationHandler> compensationHandlers;
-
-//    private final KafkaLocalConsumeMonitorProperties consumeMonitorProperties;
+    @Autowired
+    private List<KafkaCompensationHandler> kafkaCompensationHandlers;
 
     private final KafkaProperties properties;
 
@@ -53,15 +49,10 @@ public class KafkaConfig {
         this.properties = properties;
     }
 
-    //    public KafkaConfig(KafkaLocalConsumeMonitorProperties consumeMonitorProperties, KafkaProperties kafkaProperties) {
-//        this.consumeMonitorProperties = consumeMonitorProperties;
-//        this.kafkaProperties = kafkaProperties;
-//
-
     @Bean
     @ConditionalOnMissingBean({ProducerFactory.class})
     public ProducerFactory<?, ?> kafkaProducerFactory(ObjectProvider<DefaultKafkaProducerFactoryCustomizer> customizers) {
-        DefaultKafkaProducerFactory<?, ?> factory = new CustomerDefaultKafkaProducerFactory(this.properties.buildProducerProperties(), interceptors);
+        DefaultKafkaProducerFactory<?, ?> factory = new CustomerDefaultKafkaProducerFactory(this.properties.buildProducerProperties(), new CustomerProducerInterceptors(interceptors, robotAlarm, kafkaCompensationHandlers));
         String transactionIdPrefix = this.properties.getProducer().getTransactionIdPrefix();
         if (transactionIdPrefix != null) {
             factory.setTransactionIdPrefix(transactionIdPrefix);
