@@ -14,7 +14,7 @@ public class CustomerProducerInterceptor implements ProducerInterceptor<Object, 
     @Override
     public ProducerRecord<Object, Object> onSend(ProducerRecord<Object, Object> record) {
         log.info("onSend 拦截器 1。。。。。");
-        return null;
+        return record;
     }
 
     @Override

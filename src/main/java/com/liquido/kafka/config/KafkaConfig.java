@@ -72,11 +72,11 @@ public class KafkaConfig {
 
         // create dead letter recover component
         DeadLetterPublishingRecoverer deadLetterPublishingRecoverer = new DeadLetterPublishingRecoverer(kafkaTemplate, (cr, e) ->
-                new TopicPartition("czl.DLT", cr.partition()));
+                new TopicPartition("czl1.DLT", cr.partition()));
 
         // config backoff, specify how many times kafka consumer consume fail or how long a single consuming takes will
         // trigger sending the dead letter message.
-        BackOff backOff = new FixedBackOff(3000, 3);
+        BackOff backOff = new FixedBackOff(3000, 1);
 
         // use our DLT handler adapter, to send alarm or do log
         DefaultErrorHandler commonErrorHandler = new CustomErrorHandler(deadLetterPublishingRecoverer, backOff, robotAlarm);

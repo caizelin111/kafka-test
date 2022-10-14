@@ -8,28 +8,24 @@ import org.springframework.kafka.listener.ErrorHandler;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
 public class KafkaConsumer {
     private final Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
 
-    //不指定group，默认取yml里配置的
     @KafkaListener(topics = {"testInfoTopic"})
-    public void onMessage1(ConsumerRecord<?, ?> consumerRecord) {
+    public void onMessage1(List<ConsumerRecord<String, String>> consumerRecord, Acknowledgment acknowledgment) {
         logger.info("comsumerRecord ...", consumerRecord);
-        Optional<?> optional = Optional.ofNullable(consumerRecord.value());
+//        Optional<?> optional = Optional.ofNullable(consumerRecord.value());
+//        System.out.println(0/0);
         System.out.println(0/0);
-        if (optional.isPresent()) {
-            Object msg = optional.get();
-            System.out.println(msg);
-        }
+    acknowledgment.acknowledge();
     }
 
-    @KafkaListener(topics = {"czl.DLT"})
-    public void deadLetterConsumer(ConsumerRecord<?, ?> consumerRecord, Acknowledgment acknowledgment) {
-        acknowledgment.acknowledge();
-        return;
+//    @KafkaListener(topics = {"czl.DLT"})
+//    public void deadLetterConsumer(ConsumerRecord<?, ?> consumerRecord, Acknowledgment acknowledgment) {
 //        logger.info("进入死信队列 ...", consumerRecord);
 //        Optional<?> optional = Optional.ofNullable(consumerRecord.value());
 //        System.out.println(0/0);
@@ -37,5 +33,14 @@ public class KafkaConsumer {
 //            Object msg = optional.get();
 //            System.out.println(msg);
 //        }
-    }
+//        acknowledgment.acknowledge();
+//        return;
+////        logger.info("进入死信队列 ...", consumerRecord);
+////        Optional<?> optional = Optional.ofNullable(consumerRecord.value());
+////        System.out.println(0/0);
+////        if (optional.isPresent()) {
+////            Object msg = optional.get();
+////            System.out.println(msg);
+////        }
+//    }
 }

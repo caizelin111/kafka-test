@@ -35,11 +35,20 @@ public class CustomerDefaultKafkaProducerFactory extends DefaultKafkaProducerFac
     @Override
     protected Producer createRawProducer(Map rawConfigs) {
 
-        Constructor<KafkaProducer> declaredConstructor = KafkaProducer.class.getDeclaredConstructor(ProducerConfig.class, Serializable.class, Serializable.class, ProducerMetadata.class, KafkaClient.class, ProducerInterceptors.class, Time.class);
+        Constructor<KafkaProducer> declaredConstructor = KafkaProducer.class.getDeclaredConstructor(
+                ProducerConfig.class,
+                Serializer.class,
+                Serializer.class,
+                ProducerMetadata.class,
+                KafkaClient.class,
+                ProducerInterceptors.class, Time.class);
+
         declaredConstructor.setAccessible(true);
         Serializer<Object> keySerializer = super.getKeySerializerSupplier().get();
         Serializer<Object> valueSerializer = super.getValueSerializerSupplier().get();
-        KafkaProducer kafkaProducer = declaredConstructor.newInstance(appendSerializerToConfig(rawConfigs, keySerializer, valueSerializer), keySerializer, valueSerializer, null, null, interceptors, Time.SYSTEM);
+        KafkaProducer kafkaProducer =
+                declaredConstructor.newInstance(new ProducerConfig(appendSerializerToConfig(rawConfigs, keySerializer, valueSerializer)),
+                        keySerializer, valueSerializer, null, null, interceptors, Time.SYSTEM);
         for (ProducerPostProcessor<Object, Object> pp : super.getPostProcessors()) {
             kafkaProducer = (KafkaProducer) pp.apply(kafkaProducer);
         }

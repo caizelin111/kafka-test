@@ -1,16 +1,18 @@
 package com.liquido.kafka.errorHandler;
 
 import com.liquido.kafka.service.RobotAlarm;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.springframework.kafka.listener.ConsumerRecordRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.listener.MessageListenerContainer;
 import org.springframework.util.backoff.BackOff;
 
 import java.util.List;
-
+@Slf4j
 public class CustomErrorHandler extends DefaultErrorHandler {
 
     private RobotAlarm robotAlarm;
@@ -23,6 +25,7 @@ public class CustomErrorHandler extends DefaultErrorHandler {
     @Override
     public void handleRecord(Exception thrownException, ConsumerRecord<?, ?> record, Consumer<?, ?> consumer, MessageListenerContainer container) {
         super.handleRecord(thrownException, record, consumer, container);
+        log.info("handleRecord {}", record.value());
         robotAlarm.alarm();
 
     }
@@ -30,6 +33,7 @@ public class CustomErrorHandler extends DefaultErrorHandler {
     @Override
     public void handleRemaining(Exception thrownException, List<ConsumerRecord<?, ?>> records, Consumer<?, ?> consumer, MessageListenerContainer container) {
         super.handleRemaining(thrownException, records, consumer, container);
+        log.info("handleRemaining {}");
         robotAlarm.alarm();
     }
 
