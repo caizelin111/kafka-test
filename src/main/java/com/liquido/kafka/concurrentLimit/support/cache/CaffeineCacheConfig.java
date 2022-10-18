@@ -1,4 +1,4 @@
-package com.liquido.kafka.common;
+package com.liquido.kafka.concurrentLimit.support.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -7,11 +7,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.TimeUnit;
 
-@Configuration
 public class CaffeineCacheConfig {
 
-    @Bean
-    public Cache<Object, Object> cache() {
+    public static Cache<Object, Object> cache() {
         return Caffeine.newBuilder()
                 .initialCapacity(10)
                 .maximumSize(200)

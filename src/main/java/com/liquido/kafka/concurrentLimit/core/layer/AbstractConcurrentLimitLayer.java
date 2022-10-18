@@ -1,7 +1,7 @@
 package com.liquido.kafka.concurrentLimit.core.layer;
 
 
-import com.liquido.kafka.concurrentLimit.core.fixedWindow.FixedWindow;
+import com.liquido.kafka.concurrentLimit.algorithm.fixedWindow.FixedWindow;
 
 /**
  * @author caizaelin

@@ -1,4 +1,4 @@
-package com.liquido.kafka.concurrentLimit;
+package com.liquido.kafka.concurrentLimit.advise;
 
 import com.liquido.kafka.concurrentLimit.annotations.ConcurrentLimit;
 import com.liquido.kafka.concurrentLimit.core.factory.DefaultConcurrentLimitLayerFactory;
@@ -92,19 +92,16 @@ public class ConcurrentLimitAspectj implements ApplicationContextAware {
         AbstractConcurrentLimitLayer limitLayer;
         // 若使用默认的handler 和 strategy，则从默认工厂中拿即可
         if (concurrentLimit.currentLimitHandler().equals(DefaultConcurrentLimitHandler.class) && concurrentLimit.downgradeHandlerStrategy().equals(DiscardStrategy.class)) {
-            limitLayer = layerFactory.createLimitLayer();
+            DefaultConcurrentLimitLayerFactory factory = new DefaultConcurrentLimitLayerFactory();
+            limitLayer = factory.createLimitLayer();
         } else {
             // 不是默认的， 则手动加载
             ConcurrentLimitHandler handler = APP_CONTEXT.getBean(concurrentLimit.currentLimitHandler());
             DowngradeHandlerStrategy strategy = APP_CONTEXT.getBean(concurrentLimit.downgradeHandlerStrategy());
-
             limitLayer = new DefaultConcurrentLimitInvokeLayer(handler, strategy);
         }
 
-        limitLayer.invokeConcurrentLimit(businessKey, concurrentLimit.limitCount(),
-                concurrentLimit.fixedWindow(), runnable);
-
-
+        limitLayer.invokeConcurrentLimit(businessKey, concurrentLimit.limitCount(), concurrentLimit.fixedWindow(), runnable);
     }
 
 

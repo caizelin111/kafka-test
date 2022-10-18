@@ -1,7 +1,7 @@
 package com.liquido.kafka.concurrentLimit.annotations;
 
 
-import com.liquido.kafka.concurrentLimit.core.fixedWindow.FixedWindow;
+import com.liquido.kafka.concurrentLimit.algorithm.fixedWindow.FixedWindow;
 import com.liquido.kafka.concurrentLimit.core.layer.ConcurrentLimitHandler;
 import com.liquido.kafka.concurrentLimit.core.layer.impl.DefaultConcurrentLimitHandler;
 import com.liquido.kafka.concurrentLimit.core.layer.impl.DiscardStrategy;

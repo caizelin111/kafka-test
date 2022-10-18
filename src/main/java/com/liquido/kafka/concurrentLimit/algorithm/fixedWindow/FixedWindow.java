@@ -1,4 +1,4 @@
-package com.liquido.kafka.concurrentLimit.core.fixedWindow;
+package com.liquido.kafka.concurrentLimit.algorithm.fixedWindow;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

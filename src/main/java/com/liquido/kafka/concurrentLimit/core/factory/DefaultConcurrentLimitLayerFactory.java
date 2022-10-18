@@ -1,9 +1,11 @@
 package com.liquido.kafka.concurrentLimit.core.factory;
 
+import com.liquido.kafka.concurrentLimit.core.layer.impl.DefaultConcurrentLimitHandler;
 import com.liquido.kafka.concurrentLimit.core.layer.impl.DefaultConcurrentLimitInvokeLayer;
 import com.liquido.kafka.concurrentLimit.core.layer.AbstractConcurrentLimitLayer;
 import com.liquido.kafka.concurrentLimit.core.layer.ConcurrentLimitHandler;
 import com.liquido.kafka.concurrentLimit.core.layer.DowngradeHandlerStrategy;
+import com.liquido.kafka.concurrentLimit.core.layer.impl.DiscardStrategy;
 
 /**
  * @author caizelin
@@ -11,13 +13,8 @@ import com.liquido.kafka.concurrentLimit.core.layer.DowngradeHandlerStrategy;
  */
 public class DefaultConcurrentLimitLayerFactory implements LayerFactory {
 
-    private final ConcurrentLimitHandler concurrentLimitHandler;
-    private final DowngradeHandlerStrategy downgradeHandlerStrategy;
-
-    public DefaultConcurrentLimitLayerFactory(ConcurrentLimitHandler concurrentLimitHandler, DowngradeHandlerStrategy downgradeHandlerStrategy) {
-        this.concurrentLimitHandler = concurrentLimitHandler;
-        this.downgradeHandlerStrategy = downgradeHandlerStrategy;
-    }
+    private final ConcurrentLimitHandler concurrentLimitHandler = new DefaultConcurrentLimitHandler();
+    private final DowngradeHandlerStrategy downgradeHandlerStrategy = new DiscardStrategy();
 
     @Override
     public AbstractConcurrentLimitLayer createLimitLayer() {

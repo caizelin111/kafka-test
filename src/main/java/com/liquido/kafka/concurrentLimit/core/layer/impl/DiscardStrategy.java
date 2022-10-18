@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
  * @author caizelin
  * @date 2022/10/13
  */
-@Component
 public class DiscardStrategy implements DowngradeHandlerStrategy {
     @Override
     public void executeStrategy(Runnable runnable, Object...  params) {

@@ -1,7 +1,7 @@
-package com.liquido.kafka.common;
+package com.liquido.kafka.concurrentLimit.support.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.liquido.kafka.concurrentLimit.support.cache.CaffeineCacheConfig;
 import org.springframework.stereotype.Component;
 
 
@@ -11,11 +11,9 @@ import org.springframework.stereotype.Component;
  * @author caizelin
  * @date 2022/9/27
  */
-@Component
-public class CaffeineWrapper implements com.liquido.kafka.common.Cache {
+public class CaffeineWrapper implements com.liquido.kafka.concurrentLimit.support.cache.Cache {
 
-    @Autowired
-    private Cache<Object, Object> caffeineCache;
+    private final Cache<Object, Object> caffeineCache = CaffeineCacheConfig.cache();
 
     @Override
     public void putAndUpdateCache(Object key, Object value) {
